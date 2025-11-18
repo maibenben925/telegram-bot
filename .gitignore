@@ -10,3 +10,6 @@ __pycache__/
 
 # Файлы IDE (например, VS Code)
 .vscode/
+
+# Логи
+*.log
