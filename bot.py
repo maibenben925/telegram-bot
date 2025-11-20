@@ -12,7 +12,8 @@ load_dotenv()
 
 # Настройки
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-SERIAL_PORT = '/dev/ttyACM0'  # Проверьте актуальный порт Arduino (может быть /dev/ttyUSB0)
+# SERIAL_PORT = '/dev/ttyACM0'  # Проверьте актуальный порт Arduino (может быть /dev/ttyUSB0) (Raspberry Pi)
+SERIAL_PORT = 'COM4'  # Для Windows
 BAUD_RATE = 9600
 AUTHORIZED_CHAT_ID = int(os.getenv("AUTHORIZED_CHAT_ID", 0))  # Опционально: ID авторизованного пользователя
 
@@ -92,13 +93,15 @@ async def handle_color_command(update: Update, context: ContextTypes.DEFAULT_TYP
                 raise Exception("Последовательный порт не доступен")
         
         # Формат команды: "R,G,B" (пример: "255,0,128")
-        command = f"{r},{g},{b}\n"
+        # command = f"{r},{g},{b}\n"
+        command = f"R{r} G{g} B{b}\n"
         ser.write(command.encode())
         logging.info(f"Отправлено на Arduino: {command.strip()}")
         
         # Визуальная индикация (опционально)
-        color_preview = f"🔴`{r:03}` 🔵`{g:03}` 🟢`{b:03}`".replace('0', '·')
-        
+        # color_preview = f"🔴`{r:03}` 🔵`{g:03}` 🟢`{b:03}`".replace('0', '·')
+        color_preview = f"🔴`{str(r).lstrip('0') or '0'}` 🟢`{str(g).lstrip('0') or '0'}` 🔵`{str(b).lstrip('0') or '0'}`"
+
         success_msg = (
             "✅ Команда выполнена!\n"
             f"Установлен цвет:\n"
